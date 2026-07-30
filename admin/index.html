@@ -6,73 +6,184 @@
     <title>Admin - BarberBook</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .sidebar { position: fixed; }
-        .main-content { margin-left: 280px; }
+        .sidebar { 
+            position: fixed;
+            width: 280px;
+            background: var(--primary);
+            color: white;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            padding: 24px 0;
+        }
+        
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 8px;
+        }
+        
+        .sidebar-subtitle {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 12px;
+        }
+        
+        .sidebar-item {
+            margin-bottom: 4px;
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+        
+        .sidebar-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar-link.active {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .sidebar-icon {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-title {
+            padding: 12px 16px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 24px;
+        }
+        
+        .main-content { 
+            margin-left: 280px; 
+            padding: 32px;
+            background: var(--bg-light);
+            min-height: 100vh;
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: var(--transition-slow);
+                z-index: 1000;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-container">
-            <a href="../index.html" class="logo">
-                <div class="logo-icon">✂</div>
-                <span>BarberBook</span>
-            </a>
-            
-            <div class="header-actions">
-                <span style="font-size: 14px; color: var(--text-muted);">Painel Admin</span>
-                <button class="btn btn-ghost" onclick="logout()">Sair</button>
-            </div>
-        </div>
-    </header>
-
     <!-- Dashboard -->
     <div class="dashboard">
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-title">Menu</div>
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="../index.html" class="sidebar-logo">
+                    <div class="logo-icon" style="background: var(--secondary);">âœ‚</div>
+                    <span style="font-size: 20px; font-weight: 700;">BarberBook</span>
+                </a>
+                <p class="sidebar-subtitle">Painel Administrativo</p>
+            </div>
+            
             <ul class="sidebar-menu">
+                <li class="sidebar-title">Principal</li>
                 <li class="sidebar-item">
-                    <a href="index.html" class="sidebar-link active">
-                        <span class="sidebar-icon">📊</span>
+                    <a href="#" class="sidebar-link active">
+                        <span class="sidebar-icon">ðŸ“Š</span>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="barbeiros.html" class="sidebar-link">
-                        <span class="sidebar-icon">💈</span>
-                        <span>Barbeiros</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="servicos.html" class="sidebar-link">
-                        <span class="sidebar-icon">✂</span>
-                        <span>Serviços</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="agendamentos.html" class="sidebar-link">
-                        <span class="sidebar-icon">📅</span>
+                    <a href="#agendamentos" class="sidebar-link">
+                        <span class="sidebar-icon">ðŸ“…</span>
                         <span>Agendamentos</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="clientes.html" class="sidebar-link">
-                        <span class="sidebar-icon">👥</span>
+                    <a href="#barbeiros" class="sidebar-link">
+                        <span class="sidebar-icon">ðŸ’ˆ</span>
+                        <span>Barbeiros</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#servicos" class="sidebar-link">
+                        <span class="sidebar-icon">âœ‚</span>
+                        <span>ServiÃ§os</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#clientes" class="sidebar-link">
+                        <span class="sidebar-icon">ðŸ‘¥</span>
                         <span>Clientes</span>
                     </a>
                 </li>
+                
+                <li class="sidebar-title">Conta</li>
                 <li class="sidebar-item">
-                    <a href="notificacoes.html" class="sidebar-link">
-                        <span class="sidebar-icon">🔔</span>
-                        <span>Notificações</span>
+                    <a href="../perfil.html" class="sidebar-link">
+                        <span class="sidebar-icon">ðŸ‘¤</span>
+                        <span>Meu Perfil</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="configuracoes.html" class="sidebar-link">
-                        <span class="sidebar-icon">⚙</span>
-                        <span>Configurações</span>
+                    <a href="#" class="sidebar-link" onclick="logout()">
+                        <span class="sidebar-icon">ðŸšª</span>
+                        <span>Sair</span>
                     </a>
                 </li>
             </ul>
@@ -83,100 +194,67 @@
             <div class="page-header">
                 <div>
                     <h1 class="page-title">Dashboard</h1>
-                    <p class="page-subtitle">Visão geral da sua barbearia</p>
+                    <p class="page-subtitle">VisÃ£o geral da sua barbearia</p>
                 </div>
-                <button class="btn btn-primary">+ Novo Agendamento</button>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-outline" onclick="toggleSidebar()">â˜° Menu</button>
+                    <a href="../agendar.html" class="btn btn-primary">+ Novo Agendamento</a>
+                </div>
             </div>
 
             <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon blue">📅</div>
+                    <div class="stat-icon blue">ðŸ“…</div>
                     <div>
-                        <div class="stat-value">24</div>
+                        <div class="stat-value" id="totalAppointments">0</div>
                         <div class="stat-label">Agendamentos Hoje</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon green">💰</div>
+                    <div class="stat-icon green">ðŸ’°</div>
                     <div>
-                        <div class="stat-value">R$ 2.450</div>
-                        <div class="stat-label">Receita do Mês</div>
+                        <div class="stat-value" id="monthRevenue">R$ 0</div>
+                        <div class="stat-label">Receita do MÃªs</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon yellow">💈</div>
+                    <div class="stat-icon yellow">ðŸ’ˆ</div>
                     <div>
-                        <div class="stat-value">4</div>
+                        <div class="stat-value" id="activeBarbers">0</div>
                         <div class="stat-label">Barbeiros Ativos</div>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon red">👥</div>
+                    <div class="stat-icon red">ðŸ‘¥</div>
                     <div>
-                        <div class="stat-value">156</div>
+                        <div class="stat-value" id="totalClients">0</div>
                         <div class="stat-label">Clientes Totais</div>
                     </div>
                 </div>
             </div>
 
             <!-- Recent Appointments -->
-            <div class="card">
+            <div class="card" id="agendamentos">
                 <div class="card-header">
                     <h2 class="card-title">Agendamentos Recentes</h2>
-                    <a href="agendamentos.html" class="btn btn-ghost">Ver todos</a>
                 </div>
-                <div class="table-container">
+                <div class="table-container" style="box-shadow: none; border-radius: 0;">
                     <table class="table">
                         <thead>
                             <tr>
                                 <th>Cliente</th>
-                                <th>Serviço</th>
+                                <th>ServiÃ§o</th>
                                 <th>Barbeiro</th>
                                 <th>Data/Hora</th>
+                                <th>Valor</th>
                                 <th>Status</th>
-                                <th>Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="appointmentsTable">
                             <tr>
-                                <td><strong>Marcos Silva</strong></td>
-                                <td>Corte Masculino</td>
-                                <td>Carlos Silva</td>
-                                <td>29/07/2026 10:00</td>
-                                <td><span class="badge badge-confirmado">Confirmado</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-ghost">Ver</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>João Santos</strong></td>
-                                <td>Combo Corte + Barba</td>
-                                <td>André Santos</td>
-                                <td>29/07/2026 11:30</td>
-                                <td><span class="badge badge-pendente">Pendente</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-ghost">Ver</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Pedro Oliveira</strong></td>
-                                <td>Barba</td>
-                                <td>Rafael Oliveira</td>
-                                <td>29/07/2026 14:00</td>
-                                <td><span class="badge badge-confirmado">Confirmado</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-ghost">Ver</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Lucas Costa</strong></td>
-                                <td>Corte Infantil</td>
-                                <td>Lucas Costa</td>
-                                <td>29/07/2026 15:30</td>
-                                <td><span class="badge badge-concluido">Concluído</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-ghost">Ver</button>
+                                <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                    Carregando agendamentos...
                                 </td>
                             </tr>
                         </tbody>
@@ -188,14 +266,113 @@
 
     <script src="../js/config.js"></script>
     <script>
-        // Verificar se é admin
-        const user = Utils.carregarDados('user');
-        if (!user || user.role !== 'admin') {
-            // Redirecionar para login
-            // window.location.href = '../login.html';
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAdminAuth();
+        });
+        
+        async function checkAdminAuth() {
+            const user = Utils.carregarDados('user');
+            
+            if (!user || user.role !== 'admin') {
+                Utils.mostrarToast('Acesso nÃ£o autorizado', 'erro');
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1500);
+                return;
+            }
+            
+            loadStats();
+            loadAppointments();
         }
         
-        function logout() {
+        async function loadStats() {
+            if (!supabase) return;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const firstDayMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+            
+            try {
+                const [appointmentsRes, barbersRes, clientsRes] = await Promise.all([
+                    supabase.from('agendamentos').select('*').eq('data', today),
+                    supabase.from('barbeiros').select('*').eq('ativo', true),
+                    supabase.from('usuarios').select('*').eq('role', 'cliente')
+                ]);
+                
+                if (appointmentsRes.data) {
+                    document.getElementById('totalAppointments').textContent = appointmentsRes.data.length;
+                }
+                
+                const { data: monthData } = await supabase
+                    .from('agendamentos')
+                    .select('valor_total')
+                    .gte('data', firstDayMonth)
+                    .lte('data', today)
+                    .in('status', ['confirmado', 'concluido']);
+                
+                if (monthData) {
+                    const monthRev = monthData.reduce((sum, a) => sum + (parseFloat(a.valor_total) || 0), 0);
+                    document.getElementById('monthRevenue').textContent = Utils.formatarMoeda(monthRev);
+                }
+                
+                if (barbersRes.data) {
+                    document.getElementById('activeBarbers').textContent = barbersRes.data.length;
+                }
+                
+                if (clientsRes.data) {
+                    document.getElementById('totalClients').textContent = clientsRes.data.length;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatÃ­sticas:', error);
+            }
+        }
+        
+        async function loadAppointments() {
+            if (!supabase) return;
+            
+            const container = document.getElementById('appointmentsTable');
+            
+            try {
+                const { data: appointments, error } = await supabase
+                    .from('agendamentos')
+                    .select('*, usuarios(*), barbeiros(*), servicos(*)')
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+                
+                if (error) throw error;
+                
+                if (appointments && appointments.length > 0) {
+                    container.innerHTML = appointments.map(apt => `
+                        <tr>
+                            <td><strong>${apt.usuarios?.nome || 'Cliente'}</strong></td>
+                            <td>${apt.servicos?.nome || 'ServiÃ§o'}</td>
+                            <td>${apt.barbeiros?.nome || 'Barbeiro'}</td>
+                            <td>${Utils.formatarData(apt.data)} ${apt.horario}</td>
+                            <td>${Utils.formatarMoeda(apt.valor_total || 0)}</td>
+                            <td><span class="badge badge-${apt.status}">${apt.status}</span></td>
+                        </tr>
+                    `).join('');
+                } else {
+                    container.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                Nenhum agendamento encontrado
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar agendamentos:', error);
+            }
+        }
+        
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        
+        async function logout() {
+            if (supabase) {
+                await supabase.auth.signOut();
+            }
             Utils.removerDados('user');
             window.location.href = '../index.html';
         }

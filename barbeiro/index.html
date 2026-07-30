@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Barbeiro - BarberBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div style="padding: 0 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px;">
+                <a href="../index.html" style="display: flex; align-items: center; gap: 12px; color: white; text-decoration: none; margin-bottom: 8px;">
+                    <div class="logo-icon" style="background: var(--secondary);">âœ‚</div>
+                    <span style="font-size: 20px; font-weight: 700;">BarberBook</span>
+                </a>
+                <p style="font-size: 13px; color: rgba(255,255,255,0.6);">Painel do Barbeiro</p>
+            </div>
+            <ul class="sidebar-menu" style="padding: 0 12px;">
+                <li class="sidebar-item"><a href="#" class="sidebar-link active"><span class="sidebar-icon">ðŸ“Š</span><span>Dashboard</span></a></li>
+                <li class="sidebar-item"><a href="#agendamentos" class="sidebar-link"><span class="sidebar-icon">ðŸ“…</span><span>Agendamentos</span></a></li>
+                <li class="sidebar-item"><a href="#horarios" class="sidebar-link"><span class="sidebar-icon">ðŸ•</span><span>HorÃ¡rios</span></a></li>
+                <li class="sidebar-item"><a href="../perfil.html" class="sidebar-link"><span class="sidebar-icon">ðŸ‘¤</span><span>Meu Perfil</span></a></li>
+                <li class="sidebar-item"><a href="#" class="sidebar-link" onclick="logout()"><span class="sidebar-icon">ðŸšª</span><span>Sair</span></a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <div><h1 class="page-title">Bem-vindo, <span id="barberName">Barbeiro</span>!</h1><p class="page-subtitle">Aqui estÃ¡ o resumo do seu dia</p></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon blue">ðŸ“…</div><div><div class="stat-value" id="todayAppointments">0</div><div class="stat-label">Agendamentos Hoje</div></div></div>
+                <div class="stat-card"><div class="stat-icon green">âœ…</div><div><div class="stat-value" id="completedToday">0</div><div class="stat-label">ConcluÃ­dos</div></div></div>
+                <div class="stat-card"><div class="stat-icon yellow">â³</div><div><div class="stat-value" id="pendingAppointments">0</div><div class="stat-label">Pendentes</div></div></div>
+                <div class="stat-card"><div class="stat-icon red">ðŸ’°</div><div><div class="stat-value" id="todayRevenue">R$ 0</div><div class="stat-label">Receita Hoje</div></div></div>
+            </div>
+            <div class="card" id="agendamentos">
+                <div class="card-header"><h2 class="card-title">Agendamentos de Hoje</h2></div>
+                <div class="table-container" style="box-shadow: none; border-radius: 0;">
+                    <table class="table">
+                        <thead><tr><th>HorÃ¡rio</th><th>Cliente</th><th>ServiÃ§o</th><th>Status</th><th>AÃ§Ãµes</th></tr></thead>
+                        <tbody id="todayAppointmentsList"><tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">Carregando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../js/config.js"></script>
+    <script>
+        let currentBarberId = null;
+        document.addEventListener('DOMContentLoaded', function() { checkBarberAuth(); });
+        async function checkBarberAuth() {
+            const user = Utils.carregarDados('user');
+            if (!user || (user.role !== 'barbeiro' && user.role !== 'admin')) { Utils.mostrarToast('Acesso nÃ£o autorizado', 'erro'); setTimeout(() => window.location.href = '../index.html', 1500); return; }
+            document.getElementById('barberName').textContent = user.nome || 'Barbeiro';
+            currentBarberId = user.id;
+            loadTodayStats(); loadTodayAppointments();
+        }
+        async function loadTodayStats() {
+            if (!supabase || !currentBarberId) return;
+            const today = new Date().toISOString().split('T')[0];
+            try {
+                const { data } = await supabase.from('agendamentos').select('*').eq('barbeiro_id', currentBarberId).eq('data', today);
+                if (data) {
+                    document.getElementById('todayAppointments').textContent = data.length;
+                    document.getElementById('completedToday').textContent = data.filter(a => a.status === 'concluido').length;
+                    document.getElementById('pendingAppointments').textContent = data.filter(a => a.status === 'pendente' || a.status === 'confirmado').length;
+                    document.getElementById('todayRevenue').textContent = Utils.formatarMoeda(data.filter(a => a.status === 'concluido').reduce((s, a) => s + (parseFloat(a.valor_total) || 0), 0));
+                }
+            } catch (e) { console.error(e); }
+        }
+        async function loadTodayAppointments() {
+            if (!supabase || !currentBarberId) return;
+            const today = new Date().toISOString().split('T')[0];
+            try {
+                const { data } = await supabase.from('agendamentos').select('*, usuarios(*), servicos(*)').eq('barbeiro_id', currentBarberId).eq('data', today).order('horario');
+                const container = document.getElementById('todayAppointmentsList');
+                if (data && data.length > 0) {
+                    container.innerHTML = data.map(a => '<tr><td><strong>' + a.horario + '</strong></td><td>' + (a.usuarios?.nome || 'Cliente') + '</td><td>' + (a.servicos?.nome || 'ServiÃ§o') + '</td><td><span class="badge badge-' + a.status + '">' + a.status + '</span></td><td>' + (a.status === 'pendente' ? '<button class="btn btn-success btn-sm" onclick="updateStatus(\'' + a.id + '\',\'confirmado\')">Confirmar</button>' : '') + (a.status === 'confirmado' ? '<button class="btn btn-primary btn-sm" onclick="updateStatus(\'' + a.id + '\',\'concluido\')">Concluir</button>' : '') + '</td></tr>').join('');
+                } else { container.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">Nenhum agendamento para hoje</td></tr>'; }
+            } catch (e) { console.error(e); }
+        }
+        async function updateStatus(id, status) {
+            try { await supabase.from('agendamentos').update({ status }).eq('id', id); Utils.mostrarToast('Status atualizado!', 'sucesso'); loadTodayAppointments(); loadTodayStats(); } catch (e) { Utils.mostrarToast('Erro ao atualizar', 'erro'); }
+        }
+        async function logout() { if (supabase) await supabase.auth.signOut(); Utils.removerDados('user'); window.location.href = '../index.html'; }
+    </script>
+</body>
+</html>

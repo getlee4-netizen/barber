@@ -6,282 +6,209 @@
     <title>BarberBook - Agendamento de Barbearia</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="header-container">
             <a href="index.html" class="logo">
-                <div class="logo-icon">✂</div>
+                <div class="logo-icon">âœ‚</div>
                 <span>BarberBook</span>
             </a>
-            
-            <nav class="nav">
-                <a href="#servicos" class="active">Serviços</a>
+            <nav class="nav" id="mainNav">
+                <a href="#servicos" class="active">ServiÃ§os</a>
                 <a href="#barbeiros">Barbeiros</a>
                 <a href="#como-funciona">Como Funciona</a>
                 <a href="#contato">Contato</a>
             </nav>
-            
             <div class="header-actions">
                 <a href="login.html" class="btn btn-ghost">Entrar</a>
                 <a href="agendar.html" class="btn btn-primary">Agendar Agora</a>
-                <button class="menu-toggle" id="menuToggle">☰</button>
+                <a href="perfil.html" class="btn btn-outline hidden" id="perfilBtn">Meu Perfil</a>
+                <button class="menu-toggle" id="menuToggle">â˜°</button>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <div class="hero-badge">
-                <span>✂</span>
-                <span>Barbearia Premium</span>
-            </div>
-            <h1 class="hero-title">Agende seu Horário com Facilidade</h1>
-            <p class="hero-subtitle">
-                Escolha o melhor barbeiro, selecione o serviço e agende em segundos. 
-                Sem filas, sem espera. Seu tempo é valioso.
-            </p>
+            <div class="hero-badge"><span>âœ‚</span><span>Barbearia Premium</span></div>
+            <h1 class="hero-title">Agende seu HorÃ¡rio com Facilidade</h1>
+            <p class="hero-subtitle">Escolha o melhor barbeiro, selecione o serviÃ§o e agende em segundos. Sem filas, sem espera. Seu tempo Ã© valioso.</p>
             <div class="hero-actions">
-                <a href="agendar.html" class="btn btn-primary btn-lg">Agendar Horário</a>
+                <a href="agendar.html" class="btn btn-primary btn-lg">Agendar HorÃ¡rio</a>
                 <a href="#como-funciona" class="btn btn-outline btn-lg" style="border-color: rgba(255,255,255,0.3); color: white;">Saiba Mais</a>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
     <section class="section" id="servicos">
         <div class="section-header">
-            <span class="section-badge">Nossos Serviços</span>
-            <h2 class="section-title">Escolha o Serviço Ideal</h2>
-            <p class="section-subtitle">Oferecemos uma variedade de serviços para atender todas as suas necessidades</p>
+            <span class="section-badge">Nossos ServiÃ§os</span>
+            <h2 class="section-title">Escolha o ServiÃ§o Ideal</h2>
+            <p class="section-subtitle">Oferecemos uma variedade de serviÃ§os para atender todas as suas necessidades</p>
         </div>
-        
         <div class="services-grid">
             <div class="service-card">
-                <div class="service-icon">✂</div>
+                <div class="service-icon">âœ‚</div>
                 <h3 class="service-name">Corte Masculino</h3>
-                <p class="service-description">Corte moderno ou clássico, feito com precisão e cuidado</p>
+                <p class="service-description">Corte moderno ou clÃ¡ssico, feito com precisÃ£o e cuidado</p>
                 <div class="service-price">R$ 45,00</div>
                 <div class="service-duration">30 minutos</div>
             </div>
-            
             <div class="service-card">
-                <div class="service-icon">🧔</div>
+                <div class="service-icon">ðŸ§”</div>
                 <h3 class="service-name">Barba</h3>
                 <p class="service-description">Barba feita com navalha, toalha quente e produtos premium</p>
                 <div class="service-price">R$ 35,00</div>
                 <div class="service-duration">25 minutos</div>
             </div>
-            
             <div class="service-card">
-                <div class="service-icon">💈</div>
+                <div class="service-icon">ðŸ’ˆ</div>
                 <h3 class="service-name">Combo Corte + Barba</h3>
-                <p class="service-description">O pacote completo para quem quer estar impecável</p>
+                <p class="service-description">O pacote completo para quem quer estar impecÃ¡vel</p>
                 <div class="service-price">R$ 70,00</div>
                 <div class="service-duration">50 minutos</div>
             </div>
-            
             <div class="service-card">
-                <div class="service-icon">🎨</div>
-                <h3 class="service-name">Pigmentação</h3>
-                <p class="service-description">Cobertura de cabelos brancos ou criação de design</p>
+                <div class="service-icon">ðŸŽ¨</div>
+                <h3 class="service-name">PigmentaÃ§Ã£o</h3>
+                <p class="service-description">Cobertura de cabelos brancos ou criaÃ§Ã£o de design</p>
                 <div class="service-price">R$ 60,00</div>
                 <div class="service-duration">40 minutos</div>
             </div>
-            
             <div class="service-card">
-                <div class="service-icon">💆</div>
-                <h3 class="service-name">Hidratação</h3>
+                <div class="service-icon">ðŸ’†</div>
+                <h3 class="service-name">HidrataÃ§Ã£o</h3>
                 <p class="service-description">Tratamento capilar profundo para cabelos e barba</p>
                 <div class="service-price">R$ 50,00</div>
                 <div class="service-duration">35 minutos</div>
             </div>
-            
             <div class="service-card">
-                <div class="service-icon">👦</div>
+                <div class="service-icon">ðŸ‘¦</div>
                 <h3 class="service-name">Corte Infantil</h3>
-                <p class="service-description">Corte especial para crianças com atendimento lúdico</p>
+                <p class="service-description">Corte especial para crianÃ§as com atendimento lÃºdico</p>
                 <div class="service-price">R$ 35,00</div>
                 <div class="service-duration">25 minutos</div>
             </div>
         </div>
     </section>
 
-    <!-- Barbers Section -->
     <section class="section" id="barbeiros" style="background: var(--bg-white);">
         <div class="section-header">
             <span class="section-badge">Nossa Equipe</span>
-            <h2 class="section-title">Conheça Nossos Barbeiros</h2>
+            <h2 class="section-title">ConheÃ§a Nossos Barbeiros</h2>
             <p class="section-subtitle">Profissionais experientes e apaixonados pelo que fazem</p>
         </div>
-        
         <div class="barbers-grid">
             <div class="barber-card">
                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" alt="Carlos" class="barber-avatar">
                 <h3 class="barber-name">Carlos Silva</h3>
                 <p class="barber-specialty">Especialista em Cortes Modernos</p>
-                <div class="barber-rating">
-                    <span>⭐</span>
-                    <span>4.9</span>
-                    <span style="color: var(--text-muted);">(127 avaliações)</span>
-                </div>
+                <div class="barber-rating"><span>â­</span><span>4.9</span><span style="color: var(--text-muted);">(127 avaliaÃ§Ãµes)</span></div>
             </div>
-            
             <div class="barber-card">
-                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200" alt="André" class="barber-avatar">
-                <h3 class="barber-name">André Santos</h3>
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200" alt="AndrÃ©" class="barber-avatar">
+                <h3 class="barber-name">AndrÃ© Santos</h3>
                 <p class="barber-specialty">Mestre em Barba e Navalha</p>
-                <div class="barber-rating">
-                    <span>⭐</span>
-                    <span>4.8</span>
-                    <span style="color: var(--text-muted);">(98 avaliações)</span>
-                </div>
+                <div class="barber-rating"><span>â­</span><span>4.8</span><span style="color: var(--text-muted);">(98 avaliaÃ§Ãµes)</span></div>
             </div>
-            
             <div class="barber-card">
                 <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200" alt="Rafael" class="barber-avatar">
                 <h3 class="barber-name">Rafael Oliveira</h3>
                 <p class="barber-specialty">Especialista em Designs</p>
-                <div class="barber-rating">
-                    <span>⭐</span>
-                    <span>4.9</span>
-                    <span style="color: var(--text-muted);">(156 avaliações)</span>
-                </div>
+                <div class="barber-rating"><span>â­</span><span>4.9</span><span style="color: var(--text-muted);">(156 avaliaÃ§Ãµes)</span></div>
             </div>
-            
             <div class="barber-card">
                 <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200" alt="Lucas" class="barber-avatar">
                 <h3 class="barber-name">Lucas Costa</h3>
-                <p class="barber-specialty">Colorimetria e Pigmentação</p>
-                <div class="barber-rating">
-                    <span>⭐</span>
-                    <span>4.7</span>
-                    <span style="color: var(--text-muted);">(84 avaliações)</span>
-                </div>
+                <p class="barber-specialty">Colorimetria e PigmentaÃ§Ã£o</p>
+                <div class="barber-rating"><span>â­</span><span>4.7</span><span style="color: var(--text-muted);">(84 avaliaÃ§Ãµes)</span></div>
             </div>
         </div>
     </section>
 
-    <!-- How It Works Section -->
     <section class="section" id="como-funciona">
         <div class="section-header">
             <span class="section-badge">Como Funciona</span>
-            <h2 class="section-title">Fácil e Rápido</h2>
+            <h2 class="section-title">FÃ¡cil e RÃ¡pido</h2>
             <p class="section-subtitle">Agende em apenas 3 passos simples</p>
         </div>
-        
         <div class="services-grid">
             <div class="service-card" style="text-align: left;">
                 <div class="service-icon" style="background: linear-gradient(135deg, var(--info), #818cf8);">1</div>
-                <h3 class="service-name">Escolha o Serviço</h3>
-                <p class="service-description">Selecione entre nossos serviços de corte, barba, combo e muito mais</p>
+                <h3 class="service-name">Escolha o ServiÃ§o</h3>
+                <p class="service-description">Selecione entre nossos serviÃ§os de corte, barba, combo e muito mais</p>
             </div>
-            
             <div class="service-card" style="text-align: left;">
                 <div class="service-icon" style="background: linear-gradient(135deg, var(--success), #34d399);">2</div>
                 <h3 class="service-name">Escolha o Barbeiro</h3>
                 <p class="service-description">Veja a disponibilidade e escolha seu barbeiro favorito</p>
             </div>
-            
             <div class="service-card" style="text-align: left;">
                 <div class="service-icon" style="background: linear-gradient(135deg, var(--warning), #fbbf24);">3</div>
-                <h3 class="service-name">Confirme o Horário</h3>
-                <p class="service-description">Escolha o melhor dia e horário, confirme e pronto!</p>
+                <h3 class="service-name">Confirme o HorÃ¡rio</h3>
+                <p class="service-description">Escolha o melhor dia e horÃ¡rio, confirme e pronto!</p>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
     <section class="hero" style="min-height: auto; padding: 80px 24px;">
         <div class="hero-content" style="text-align: center; max-width: 700px;">
             <h2 class="hero-title" style="font-size: 42px;">Pronto para Agendar?</h2>
-            <p class="hero-subtitle">
-                Não perca tempo. Agende agora e garanta seu horário com o melhor barbeiro da cidade.
-            </p>
+            <p class="hero-subtitle">NÃ£o perca tempo. Agende agora e garanta seu horÃ¡rio com o melhor barbeiro da cidade.</p>
             <div class="hero-actions" style="justify-content: center;">
                 <a href="agendar.html" class="btn btn-primary btn-lg">Agendar Agora</a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer style="background: var(--primary); color: white; padding: 60px 24px 24px;" id="contato">
         <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
             <div>
                 <div class="logo" style="color: white; margin-bottom: 16px;">
-                    <div class="logo-icon">✂</div>
-                    <span>BarberBook</span>
+                    <div class="logo-icon">âœ‚</div><span>BarberBook</span>
                 </div>
-                <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">
-                    A melhor plataforma de agendamento para barbearias. Fácil, rápido e seguro.
-                </p>
-                <div style="display: flex; gap: 12px;">
-                    <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">📷</a>
-                    <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">📘</a>
-                    <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">🐦</a>
-                </div>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">A melhor plataforma de agendamento para barbearias. FÃ¡cil, rÃ¡pido e seguro.</p>
             </div>
-            
             <div>
-                <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 20px;">Links Rápidos</h4>
+                <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 20px;">Links RÃ¡pidos</h4>
                 <ul style="list-style: none; color: rgba(255,255,255,0.7);">
-                    <li style="margin-bottom: 12px;"><a href="#" style="color: rgba(255,255,255,0.7);">Início</a></li>
-                    <li style="margin-bottom: 12px;"><a href="#servicos" style="color: rgba(255,255,255,0.7);">Serviços</a></li>
-                    <li style="margin-bottom: 12px;"><a href="#barbeiros" style="color: rgba(255,255,255,0.7);">Barbeiros</a></li>
+                    <li style="margin-bottom: 12px;"><a href="index.html" style="color: rgba(255,255,255,0.7);">InÃ­cio</a></li>
+                    <li style="margin-bottom: 12px;"><a href="#servicos" style="color: rgba(255,255,255,0.7);">ServiÃ§os</a></li>
                     <li style="margin-bottom: 12px;"><a href="agendar.html" style="color: rgba(255,255,255,0.7);">Agendar</a></li>
                 </ul>
             </div>
-            
             <div>
                 <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 20px;">Contato</h4>
                 <ul style="list-style: none; color: rgba(255,255,255,0.7);">
-                    <li style="margin-bottom: 12px;">📍 Rua Example, 123</li>
-                    <li style="margin-bottom: 12px;">📞 (11) 99999-9999</li>
-                    <li style="margin-bottom: 12px;">✉ contato@barberbook.com</li>
-                    <li style="margin-bottom: 12px;">⏰ Seg-Sáb: 9h às 19h</li>
+                    <li style="margin-bottom: 12px;">ðŸ“ Rua Example, 123</li>
+                    <li style="margin-bottom: 12px;">ðŸ“ž (11) 99999-9999</li>
+                    <li style="margin-bottom: 12px;">âœ‰ contato@barberbook.com</li>
+                    <li style="margin-bottom: 12px;">â° Seg-SÃ¡b: 9h Ã s 19h</li>
                 </ul>
             </div>
         </div>
-        
         <div style="max-width: 1200px; margin: 40px auto 0; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: rgba(255,255,255,0.5); font-size: 14px;">
-            <p>© 2026 BarberBook. Todos os direitos reservados.</p>
+            <p>Â© 2026 BarberBook. Todos os direitos reservados.</p>
         </div>
     </footer>
 
     <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
     <script>
-        // Mobile Menu Toggle
         const menuToggle = document.getElementById('menuToggle');
-        const nav = document.querySelector('.nav');
-        
-        if (menuToggle) {
-            menuToggle.addEventListener('click', () => {
-                nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
-            });
-        }
-
-        // Smooth Scroll
+        const nav = document.getElementById('mainNav');
+        if (menuToggle) { menuToggle.addEventListener('click', () => { nav.classList.toggle('active'); }); }
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
-
-        // Header Scroll Effect
         const header = document.querySelector('.header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.style.boxShadow = 'var(--shadow-md)';
-            } else {
-                header.style.boxShadow = 'none';
-            }
-        });
+        window.addEventListener('scroll', () => { header.classList.toggle('scrolled', window.scrollY > 50); });
     </script>
 </body>
 </html>

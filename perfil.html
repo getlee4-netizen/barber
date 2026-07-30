@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - BarberBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .profile-container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; margin-top: calc(var(--header-height) + 40px); }
+        .profile-header { display: flex; align-items: center; gap: 24px; margin-bottom: 40px; padding: 32px; background: var(--bg-white); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+        .profile-avatar { width: 100px; height: 100px; border-radius: var(--radius-full); background: linear-gradient(135deg, var(--secondary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; font-weight: 700; flex-shrink: 0; }
+        .profile-info h1 { font-size: 24px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+        .profile-info p { color: var(--text-muted); margin-bottom: 8px; }
+        .profile-stats { display: flex; gap: 24px; margin-top: 12px; }
+        .profile-stat { text-align: center; }
+        .profile-stat-value { font-size: 20px; font-weight: 700; color: var(--secondary); }
+        .profile-stat-label { font-size: 12px; color: var(--text-muted); }
+        .profile-section { margin-bottom: 32px; }
+        .profile-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .profile-section-title { font-size: 18px; font-weight: 600; color: var(--text-dark); }
+        .appointment-list { display: flex; flex-direction: column; gap: 16px; }
+        .appointment-item { background: var(--bg-white); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; transition: var(--transition-premium); }
+        .appointment-item:hover { transform: translateX(5px); box-shadow: var(--shadow); }
+        .appointment-main { display: flex; align-items: center; gap: 16px; flex: 1; }
+        .appointment-icon { width: 48px; height: 48px; border-radius: var(--radius-md); background: rgba(233, 69, 96, 0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .appointment-details h3 { font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; }
+        .appointment-details p { font-size: 13px; color: var(--text-muted); }
+        .appointment-meta { text-align: right; }
+        .appointment-date { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; }
+        .appointment-price { font-size: 16px; font-weight: 700; color: var(--secondary); }
+        .empty-state { text-align: center; padding: 60px 24px; background: var(--bg-white); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+        .empty-icon { font-size: 64px; margin-bottom: 16px; }
+        .empty-title { font-size: 20px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px; }
+        .empty-text { color: var(--text-muted); margin-bottom: 24px; }
+        .settings-form { background: var(--bg-white); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow); }
+        @media (max-width: 768px) { .profile-header { flex-direction: column; text-align: center; } .profile-stats { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo"><div class="logo-icon">âœ‚</div><span>BarberBook</span></a>
+            <div class="header-actions">
+                <a href="index.html" class="btn btn-ghost">InÃ­cio</a>
+                <a href="agendar.html" class="btn btn-outline">Agendar</a>
+                <button class="btn btn-ghost" onclick="logout()">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="profile-container">
+        <div class="profile-header animate-fade-in-up">
+            <div class="profile-avatar" id="profileAvatar">-</div>
+            <div class="profile-info">
+                <h1 id="profileName">Carregando...</h1>
+                <p id="profileEmail">-</p>
+                <div class="profile-stats">
+                    <div class="profile-stat"><div class="profile-stat-value" id="totalAppointments">0</div><div class="profile-stat-label">Agendamentos</div></div>
+                    <div class="profile-stat"><div class="profile-stat-value" id="completedAppointments">0</div><div class="profile-stat-label">ConcluÃ­dos</div></div>
+                    <div class="profile-stat"><div class="profile-stat-value" id="totalSpent">R$ 0</div><div class="profile-stat-label">Total Gasto</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <div class="profile-section-header">
+                <h2 class="profile-section-title">PrÃ³ximos Agendamentos</h2>
+                <a href="agendar.html" class="btn btn-primary btn-sm">+ Novo Agendamento</a>
+            </div>
+            <div class="appointment-list" id="upcomingAppointments">
+                <div class="empty-state"><div class="empty-icon">ðŸ“…</div><h3 class="empty-title">Nenhum agendamento</h3><p class="empty-text">VocÃª ainda nÃ£o tem agendamentos futuros.</p><a href="agendar.html" class="btn btn-primary">Agendar Agora</a></div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <div class="profile-section-header"><h2 class="profile-section-title">ConfiguraÃ§Ãµes</h2></div>
+            <div class="settings-form">
+                <form id="settingsForm">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div class="form-group"><label class="form-label">Nome</label><input type="text" class="form-input" id="settingsName" placeholder="Seu nome"></div>
+                        <div class="form-group"><label class="form-label">Telefone</label><input type="tel" class="form-input" id="settingsPhone" placeholder="(11) 99999-9999"></div>
+                    </div>
+                    <div class="form-group"><label class="form-label">E-mail</label><input type="email" class="form-input" id="settingsEmail" disabled></div>
+                    <button type="submit" class="btn btn-primary">Salvar AlteraÃ§Ãµes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background: var(--primary); color: white; padding: 40px 24px 24px; margin-top: 60px;">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <div class="logo" style="color: white; justify-content: center; margin-bottom: 16px;"><div class="logo-icon">âœ‚</div><span>BarberBook</span></div>
+            <p style="color: rgba(255,255,255,0.7);">Â© 2026 BarberBook. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { loadProfile(); loadAppointments(); setupSettingsForm(); });
+        async function loadProfile() {
+            const user = Utils.carregarDados('user');
+            if (!user) { window.location.href = 'login.html'; return; }
+            document.getElementById('profileName').textContent = user.nome || 'UsuÃ¡rio';
+            document.getElementById('profileEmail').textContent = user.email || '';
+            document.getElementById('profileAvatar').textContent = (user.nome || 'U').charAt(0).toUpperCase();
+            document.getElementById('settingsName').value = user.nome || '';
+            document.getElementById('settingsPhone').value = user.telefone || '';
+            document.getElementById('settingsEmail').value = user.email || '';
+            await loadStats(user.id);
+        }
+        async function loadStats(userId) {
+            if (!supabase) return;
+            try {
+                const { data: appointments } = await supabase.from('agendamentos').select('*').eq('usuario_id', userId);
+                if (appointments) {
+                    document.getElementById('totalAppointments').textContent = appointments.length;
+                    document.getElementById('completedAppointments').textContent = appointments.filter(a => a.status === 'concluido').length;
+                    document.getElementById('totalSpent').textContent = Utils.formatarMoeda(appointments.filter(a => a.status === 'concluido').reduce((sum, a) => sum + (parseFloat(a.valor_total) || 0), 0));
+                }
+            } catch (e) { console.error(e); }
+        }
+        async function loadAppointments() {
+            const user = Utils.carregarDados('user');
+            if (!user || !supabase) return;
+            try {
+                const { data: appointments } = await supabase.from('agendamentos').select('*, servicos(*), barbeiros(*)').eq('usuario_id', user.id).order('data', { ascending: false });
+                if (appointments && appointments.length > 0) {
+                    const today = new Date().toISOString().split('T')[0];
+                    const upcoming = appointments.filter(a => a.data >= today && a.status !== 'cancelado');
+                    const past = appointments.filter(a => a.data < today || a.status === 'concluido' || a.status === 'cancelado');
+                    if (upcoming.length > 0) renderAppointments('upcomingAppointments', upcoming);
+                    if (past.length > 0) renderAppointments('pastAppointments', past);
+                }
+            } catch (e) { console.error(e); }
+        }
+        function renderAppointments(containerId, appointments) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = appointments.map(apt => '<div class="appointment-item"><div class="appointment-main"><div class="appointment-icon">âœ‚</div><div class="appointment-details"><h3>' + (apt.servicos?.nome || 'ServiÃ§o') + '</h3><p>Barbeiro: ' + (apt.barbeiros?.nome || 'A definir') + '</p></div></div><div class="appointment-meta"><div class="appointment-date">' + Utils.formatarData(apt.data) + ' Ã s ' + apt.horario + '</div><div class="appointment-price">' + Utils.formatarMoeda(apt.valor_total || 0) + '</div></div><div><span class="badge badge-' + apt.status + '">' + apt.status + '</span>' + (apt.status === 'pendente' ? ' <button class="btn btn-danger btn-sm" onclick="cancelAppointment(\'' + apt.id + '\')">Cancelar</button>' : '') + '</div></div>').join('');
+        }
+        async function cancelAppointment(id) {
+            if (!confirm('Tem certeza que deseja cancelar?')) return;
+            try { await supabase.from('agendamentos').update({ status: 'cancelado' }).eq('id', id); Utils.mostrarToast('Agendamento cancelado', 'sucesso'); loadAppointments(); } catch (e) { Utils.mostrarToast('Erro ao cancelar', 'erro'); }
+        }
+        function setupSettingsForm() {
+            document.getElementById('settingsForm')?.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const user = Utils.carregarDados('user');
+                if (!user) return;
+                const nome = document.getElementById('settingsName').value;
+                const telefone = document.getElementById('settingsPhone').value;
+                try { if (supabase) await supabase.from('usuarios').update({ nome, telefone }).eq('id', user.id); Utils.salvarDados('user', { ...user, nome, telefone }); Utils.mostrarToast('Perfil atualizado!', 'sucesso'); document.getElementById('profileName').textContent = nome; document.getElementById('profileAvatar').textContent = nome.charAt(0).toUpperCase(); } catch (e) { Utils.mostrarToast('Erro ao atualizar', 'erro'); }
+            });
+        }
+        async function logout() { await auth.logout(); }
+    </script>
+</body>
+</html>

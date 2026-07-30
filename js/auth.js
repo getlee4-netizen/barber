@@ -1,234 +1,125 @@
-// ============================================
-// AUTENTICAÇÃO - BarberBook
-// ============================================
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Verificar se já está logado
     checkAuthStatus();
-    
-    // Setup form handlers
     setupLoginForm();
     setupCadastroForm();
+    setupHeaderAuth();
 });
 
-// ============================================
-// VERIFICAR STATUS DE AUTENTICAÇÃO
-// ============================================
-
 function checkAuthStatus() {
-    const user = Utils.carregarDados('user');
-    if (user) {
-        // Usuário já está logado
-        updateUserUI(user);
-    }
+    if (!supabase) return;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) loadUserProfile(session.user);
+    });
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) loadUserProfile(session.user);
+        else if (event === 'SIGNED_OUT') { Utils.removerDados('user'); updateHeaderUI(null); }
+    });
 }
 
-function updateUserUI(user) {
-    // Atualizar botões no header
+async function loadUserProfile(user) {
+    try {
+        const { data } = await supabase.from('usuarios').select('*').eq('id', user.id).single();
+        if (data) { Utils.salvarDados('user', data); updateHeaderUI(data); }
+        else if (user.email) {
+            const profile = { id: user.id, email: user.email, nome: user.user_metadata?.nome || user.email.split('@')[0], telefone: user.user_metadata?.telefone || '', role: 'cliente', created_at: user.created_at };
+            Utils.salvarDados('user', profile); updateHeaderUI(profile);
+        }
+    } catch (err) { console.error('Erro ao carregar perfil:', err); }
+}
+
+function updateHeaderUI(user) {
     const loginBtns = document.querySelectorAll('a[href="login.html"]');
     const perfilBtn = document.getElementById('perfilBtn');
-    
-    if (user && perfilBtn) {
-        perfilBtn.classList.remove('hidden');
-    }
+    if (user) { loginBtns.forEach(b => b.style.display = 'none'); if (perfilBtn) perfilBtn.classList.remove('hidden'); }
+    else { loginBtns.forEach(b => b.style.display = ''); if (perfilBtn) perfilBtn.classList.add('hidden'); }
 }
 
-// ============================================
-// LOGIN
-// ============================================
+function setupHeaderAuth() { updateHeaderUI(Utils.carregarDados('user')); }
 
 function setupLoginForm() {
     const form = document.getElementById('loginForm');
     if (!form) return;
-    
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const remember = document.getElementById('remember').checked;
-        
-        // Validações básicas
-        if (!Utils.validarEmail(email)) {
-            Utils.mostrarToast('E-mail inválido', 'erro');
-            return;
-        }
-        
-        if (password.length < 6) {
-            Utils.mostrarToast('Senha deve ter no mínimo 6 caracteres', 'erro');
-            return;
-        }
-        
-        // Mostrar loading
+        if (!Utils.validarEmail(email)) { Utils.mostrarToast('E-mail invÃ¡lido', 'erro'); return; }
+        if (password.length < 6) { Utils.mostrarToast('Senha deve ter no mÃ­nimo 6 caracteres', 'erro'); return; }
         const btn = form.querySelector('button[type="submit"]');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<span class="loading"></span> Entrando...';
-        btn.disabled = true;
-        
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<span class="loading"></span> Entrando...'; btn.disabled = true;
         try {
-            // Simular login (substituir por Supabase Auth)
-            await simulateLogin(email, password);
-            
+            if (!supabase) throw new Error('Supabase nÃ£o configurado');
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) throw error;
             Utils.mostrarToast('Login realizado com sucesso!', 'sucesso');
-            
-            // Redirecionar
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 1000);
-            
+            setTimeout(() => { window.location.href = 'index.html'; }, 1000);
         } catch (error) {
-            Utils.mostrarToast(error.message || 'Erro ao fazer login', 'erro');
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            let msg = error.message || 'Erro ao fazer login';
+            if (msg.includes('Invalid login')) msg = 'E-mail ou senha incorretos';
+            Utils.mostrarToast(msg, 'erro'); btn.innerHTML = orig; btn.disabled = false;
         }
     });
 }
 
-// ============================================
-// CADASTRO
-// ============================================
-
 function setupCadastroForm() {
     const form = document.getElementById('cadastroForm');
     if (!form) return;
-    
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
         const nome = document.getElementById('nome').value;
         const email = document.getElementById('email').value;
         const telefone = document.getElementById('telefone').value;
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         const terms = document.getElementById('terms').checked;
-        
-        // Validações
-        if (nome.length < 3) {
-            Utils.mostrarToast('Nome deve ter no mínimo 3 caracteres', 'erro');
-            return;
-        }
-        
-        if (!Utils.validarEmail(email)) {
-            Utils.mostrarToast('E-mail inválido', 'erro');
-            return;
-        }
-        
-        if (password.length < 6) {
-            Utils.mostrarToast('Senha deve ter no mínimo 6 caracteres', 'erro');
-            return;
-        }
-        
-        if (password !== confirmPassword) {
-            Utils.mostrarToast('As senhas não conferem', 'erro');
-            return;
-        }
-        
-        if (!terms) {
-            Utils.mostrarToast('Aceite os termos de uso', 'erro');
-            return;
-        }
-        
-        // Mostrar loading
+        if (nome.length < 3) { Utils.mostrarToast('Nome deve ter no mÃ­nimo 3 caracteres', 'erro'); return; }
+        if (!Utils.validarEmail(email)) { Utils.mostrarToast('E-mail invÃ¡lido', 'erro'); return; }
+        if (password.length < 6) { Utils.mostrarToast('Senha deve ter no mÃ­nimo 6 caracteres', 'erro'); return; }
+        if (password !== confirmPassword) { Utils.mostrarToast('As senhas nÃ£o conferem', 'erro'); return; }
+        if (!terms) { Utils.mostrarToast('Aceite os termos de uso', 'erro'); return; }
         const btn = form.querySelector('button[type="submit"]');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<span class="loading"></span> Criando conta...';
-        btn.disabled = true;
-        
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<span class="loading"></span> Criando conta...'; btn.disabled = true;
         try {
-            // Simular cadastro (substituir por Supabase Auth)
-            await simulateRegister({ nome, email, telefone, password });
-            
-            Utils.mostrarToast('Conta criada com sucesso!', 'sucesso');
-            
-            // Redirecionar
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 1000);
-            
+            if (!supabase) throw new Error('Supabase nÃ£o configurado');
+            const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { nome, telefone } } });
+            if (error) throw error;
+            if (data.user) {
+                await supabase.from('usuarios').insert({ id: data.user.id, nome, email, telefone, role: 'cliente', created_at: new Date().toISOString() });
+            }
+            Utils.mostrarToast('Conta criada com sucesso! Verifique seu e-mail.', 'sucesso');
+            setTimeout(() => { window.location.href = 'login.html'; }, 1500);
         } catch (error) {
-            Utils.mostrarToast(error.message || 'Erro ao criar conta', 'erro');
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            let msg = error.message || 'Erro ao criar conta';
+            if (msg.includes('already registered')) msg = 'Este e-mail jÃ¡ estÃ¡ cadastrado';
+            Utils.mostrarToast(msg, 'erro'); btn.innerHTML = orig; btn.disabled = false;
         }
     });
 }
 
-// ============================================
-// LOGIN SOCIAL
-// ============================================
-
-function loginWithGoogle() {
-    // Implementar com Supabase Auth
-    Utils.mostrarToast('Login com Google em desenvolvimento', 'info');
+async function loginWithGoogle() {
+    try {
+        if (!supabase) throw new Error('Supabase nÃ£o configurado');
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/index.html' } });
+        if (error) throw error;
+    } catch (error) { Utils.mostrarToast(error.message || 'Erro ao conectar com Google', 'erro'); }
 }
 
-function loginWithFacebook() {
-    // Implementar com Supabase Auth
-    Utils.mostrarToast('Login com Facebook em desenvolvimento', 'info');
+async function loginWithFacebook() {
+    try {
+        if (!supabase) throw new Error('Supabase nÃ£o configurado');
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.origin + '/index.html' } });
+        if (error) throw error;
+    } catch (error) { Utils.mostrarToast(error.message || 'Erro ao conectar com Facebook', 'erro'); }
 }
 
-function registerWithGoogle() {
-    loginWithGoogle();
+function registerWithGoogle() { loginWithGoogle(); }
+function registerWithFacebook() { loginWithFacebook(); }
+
+async function logout() {
+    try { if (supabase) await supabase.auth.signOut(); Utils.removerDados('user'); Utils.mostrarToast('Logout realizado', 'sucesso'); setTimeout(() => { window.location.href = 'index.html'; }, 1000); }
+    catch (error) { Utils.mostrarToast('Erro ao fazer logout', 'erro'); }
 }
 
-function registerWithFacebook() {
-    loginWithFacebook();
-}
-
-// ============================================
-// SIMULAÇÃO (Substituir por Supabase)
-// ============================================
-
-async function simulateLogin(email, password) {
-    // Simular delay de rede
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Simular sucesso
-    const user = {
-        id: Utils.gerarId(),
-        email: email,
-        nome: email.split('@')[0],
-        role: 'cliente',
-        created_at: new Date().toISOString()
-    };
-    
-    Utils.salvarDados('user', user);
-    return user;
-}
-
-async function simulateRegister(userData) {
-    // Simular delay de rede
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Simular sucesso
-    const user = {
-        id: Utils.gerarId(),
-        ...userData,
-        role: 'cliente',
-        created_at: new Date().toISOString()
-    };
-    
-    Utils.salvarDados('user', user);
-    return user;
-}
-
-// ============================================
-// LOGOUT
-// ============================================
-
-function logout() {
-    Utils.removerDados('user');
-    Utils.mostrarToast('Logout realizado', 'sucesso');
-    setTimeout(() => {
-        window.location.href = '/';
-    }, 1000);
-}
-
-// Exportar funções
-window.auth = {
-    login: simulateLogin,
-    register: simulateRegister,
-    logout: logout,
-    loginWithGoogle,
-    loginWithFacebook
-};
+window.auth = { logout, loginWithGoogle, loginWithFacebook };

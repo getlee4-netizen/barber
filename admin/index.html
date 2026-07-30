@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - BarberBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .sidebar { position: fixed; }
+        .main-content { margin-left: 280px; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">✂</div>
+                <span>BarberBook</span>
+            </a>
+            
+            <div class="header-actions">
+                <span style="font-size: 14px; color: var(--text-muted);">Painel Admin</span>
+                <button class="btn btn-ghost" onclick="logout()">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Menu</div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="index.html" class="sidebar-link active">
+                        <span class="sidebar-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="barbeiros.html" class="sidebar-link">
+                        <span class="sidebar-icon">💈</span>
+                        <span>Barbeiros</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="servicos.html" class="sidebar-link">
+                        <span class="sidebar-icon">✂</span>
+                        <span>Serviços</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="agendamentos.html" class="sidebar-link">
+                        <span class="sidebar-icon">📅</span>
+                        <span>Agendamentos</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="clientes.html" class="sidebar-link">
+                        <span class="sidebar-icon">👥</span>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="notificacoes.html" class="sidebar-link">
+                        <span class="sidebar-icon">🔔</span>
+                        <span>Notificações</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="configuracoes.html" class="sidebar-link">
+                        <span class="sidebar-icon">⚙</span>
+                        <span>Configurações</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Visão geral da sua barbearia</p>
+                </div>
+                <button class="btn btn-primary">+ Novo Agendamento</button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">📅</div>
+                    <div>
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Agendamentos Hoje</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">💰</div>
+                    <div>
+                        <div class="stat-value">R$ 2.450</div>
+                        <div class="stat-label">Receita do Mês</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon yellow">💈</div>
+                    <div>
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Barbeiros Ativos</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red">👥</div>
+                    <div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Clientes Totais</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Appointments -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Agendamentos Recentes</h2>
+                    <a href="agendamentos.html" class="btn btn-ghost">Ver todos</a>
+                </div>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Serviço</th>
+                                <th>Barbeiro</th>
+                                <th>Data/Hora</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Marcos Silva</strong></td>
+                                <td>Corte Masculino</td>
+                                <td>Carlos Silva</td>
+                                <td>29/07/2026 10:00</td>
+                                <td><span class="badge badge-confirmado">Confirmado</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-ghost">Ver</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>João Santos</strong></td>
+                                <td>Combo Corte + Barba</td>
+                                <td>André Santos</td>
+                                <td>29/07/2026 11:30</td>
+                                <td><span class="badge badge-pendente">Pendente</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-ghost">Ver</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pedro Oliveira</strong></td>
+                                <td>Barba</td>
+                                <td>Rafael Oliveira</td>
+                                <td>29/07/2026 14:00</td>
+                                <td><span class="badge badge-confirmado">Confirmado</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-ghost">Ver</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lucas Costa</strong></td>
+                                <td>Corte Infantil</td>
+                                <td>Lucas Costa</td>
+                                <td>29/07/2026 15:30</td>
+                                <td><span class="badge badge-concluido">Concluído</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-ghost">Ver</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script>
+        // Verificar se é admin
+        const user = Utils.carregarDados('user');
+        if (!user || user.role !== 'admin') {
+            // Redirecionar para login
+            // window.location.href = '../login.html';
+        }
+        
+        function logout() {
+            Utils.removerDados('user');
+            window.location.href = '../index.html';
+        }
+    </script>
+</body>
+</html>

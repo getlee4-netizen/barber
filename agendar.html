@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendar - BarberBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">✂</div>
+                <span>BarberBook</span>
+            </a>
+            
+            <div class="header-actions">
+                <a href="login.html" class="btn btn-ghost">Entrar</a>
+                <a href="perfil.html" class="btn btn-outline hidden" id="perfilBtn">Meu Perfil</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Appointment Container -->
+    <div class="appointment-container">
+        <!-- Steps -->
+        <div class="appointment-steps">
+            <div class="step active" data-step="1">
+                <span class="step-number">1</span>
+                <span>Serviço</span>
+            </div>
+            <div class="step" data-step="2">
+                <span class="step-number">2</span>
+                <span>Barbeiro</span>
+            </div>
+            <div class="step" data-step="3">
+                <span class="step-number">3</span>
+                <span>Data</span>
+            </div>
+            <div class="step" data-step="4">
+                <span class="step-number">4</span>
+                <span>Hora</span>
+            </div>
+            <div class="step" data-step="5">
+                <span class="step-number">5</span>
+                <span>Confirmar</span>
+            </div>
+        </div>
+
+        <!-- Step 1: Service Selection -->
+        <div class="step-content active" id="step1">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Escolha o Serviço</h2>
+                </div>
+                <div class="card-body">
+                    <div class="services-grid" id="servicesList">
+                        <!-- Services will be loaded dynamically -->
+                        <div class="service-card" data-service="1" onclick="selectService(this)">
+                            <div class="service-icon">✂</div>
+                            <h3 class="service-name">Corte Masculino</h3>
+                            <p class="service-description">Corte moderno ou clássico</p>
+                            <div class="service-price">R$ 45,00</div>
+                            <div class="service-duration">30 minutos</div>
+                        </div>
+                        
+                        <div class="service-card" data-service="2" onclick="selectService(this)">
+                            <div class="service-icon">🧔</div>
+                            <h3 class="service-name">Barba</h3>
+                            <p class="service-description">Barba com navalha e toalha quente</p>
+                            <div class="service-price">R$ 35,00</div>
+                            <div class="service-duration">25 minutos</div>
+                        </div>
+                        
+                        <div class="service-card" data-service="3" onclick="selectService(this)">
+                            <div class="service-icon">💈</div>
+                            <h3 class="service-name">Combo Corte + Barba</h3>
+                            <p class="service-description">O pacote completo</p>
+                            <div class="service-price">R$ 70,00</div>
+                            <div class="service-duration">50 minutos</div>
+                        </div>
+                        
+                        <div class="service-card" data-service="4" onclick="selectService(this)">
+                            <div class="service-icon">🎨</div>
+                            <h3 class="service-name">Pigmentação</h3>
+                            <p class="service-description">Cobertura ou design</p>
+                            <div class="service-price">R$ 60,00</div>
+                            <div class="service-duration">40 minutos</div>
+                        </div>
+                        
+                        <div class="service-card" data-service="5" onclick="selectService(this)">
+                            <div class="service-icon">💆</div>
+                            <h3 class="service-name">Hidratação</h3>
+                            <p class="service-description">Tratamento capilar profundo</p>
+                            <div class="service-price">R$ 50,00</div>
+                            <div class="service-duration">35 minutos</div>
+                        </div>
+                        
+                        <div class="service-card" data-service="6" onclick="selectService(this)">
+                            <div class="service-icon">👦</div>
+                            <h3 class="service-name">Corte Infantil</h3>
+                            <p class="service-description">Para crianças</p>
+                            <div class="service-price">R$ 35,00</div>
+                            <div class="service-duration">25 minutos</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer" style="display: flex; justify-content: flex-end;">
+                    <button class="btn btn-primary" onclick="nextStep(2)" disabled id="nextStep1">
+                        Próximo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Barber Selection -->
+        <div class="step-content hidden" id="step2">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Escolha o Barbeiro</h2>
+                </div>
+                <div class="card-body">
+                    <div class="barbers-grid" id="barbersList">
+                        <div class="barber-card" data-barber="1" onclick="selectBarber(this)">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" alt="Carlos" class="barber-avatar">
+                            <h3 class="barber-name">Carlos Silva</h3>
+                            <p class="barber-specialty">Especialista em Cortes Modernos</p>
+                            <div class="barber-rating">
+                                <span>⭐</span>
+                                <span>4.9</span>
+                            </div>
+                        </div>
+                        
+                        <div class="barber-card" data-barber="2" onclick="selectBarber(this)">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200" alt="André" class="barber-avatar">
+                            <h3 class="barber-name">André Santos</h3>
+                            <p class="barber-specialty">Mestre em Barba e Navalha</p>
+                            <div class="barber-rating">
+                                <span>⭐</span>
+                                <span>4.8</span>
+                            </div>
+                        </div>
+                        
+                        <div class="barber-card" data-barber="3" onclick="selectBarber(this)">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200" alt="Rafael" class="barber-avatar">
+                            <h3 class="barber-name">Rafael Oliveira</h3>
+                            <p class="barber-specialty">Especialista em Designs</p>
+                            <div class="barber-rating">
+                                <span>⭐</span>
+                                <span>4.9</span>
+                            </div>
+                        </div>
+                        
+                        <div class="barber-card" data-barber="4" onclick="selectBarber(this)">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200" alt="Lucas" class="barber-avatar">
+                            <h3 class="barber-name">Lucas Costa</h3>
+                            <p class="barber-specialty">Colorimetria e Pigmentação</p>
+                            <div class="barber-rating">
+                                <span>⭐</span>
+                                <span>4.7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer" style="display: flex; justify-content: space-between;">
+                    <button class="btn btn-outline" onclick="prevStep(1)">
+                        Voltar
+                    </button>
+                    <button class="btn btn-primary" onclick="nextStep(3)" disabled id="nextStep2">
+                        Próximo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Date Selection -->
+        <div class="step-content hidden" id="step3">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Escolha a Data</h2>
+                </div>
+                <div class="card-body">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <button class="btn btn-ghost" onclick="changeMonth(-1)">← Anterior</button>
+                        <h3 id="currentMonth" style="font-size: 18px; font-weight: 600;"></h3>
+                        <button class="btn btn-ghost" onclick="changeMonth(1)">Próximo →</button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); font-weight: 500;">
+                        <div>Dom</div>
+                        <div>Seg</div>
+                        <div>Ter</div>
+                        <div>Qua</div>
+                        <div>Qui</div>
+                        <div>Sex</div>
+                        <div>Sáb</div>
+                    </div>
+                    <div class="date-picker" id="datePicker">
+                        <!-- Dates will be generated dynamically -->
+                    </div>
+                </div>
+                <div class="card-footer" style="display: flex; justify-content: space-between;">
+                    <button class="btn btn-outline" onclick="prevStep(2)">
+                        Voltar
+                    </button>
+                    <button class="btn btn-primary" onclick="nextStep(4)" disabled id="nextStep3">
+                        Próximo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Time Selection -->
+        <div class="step-content hidden" id="step4">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Escolha o Horário</h2>
+                </div>
+                <div class="card-body">
+                    <p style="margin-bottom: 20px; color: var(--text-muted);">
+                        Horários disponíveis para <strong id="selectedDateDisplay"></strong>
+                    </p>
+                    <div class="time-slots" id="timeSlots">
+                        <!-- Time slots will be generated dynamically -->
+                    </div>
+                </div>
+                <div class="card-footer" style="display: flex; justify-content: space-between;">
+                    <button class="btn btn-outline" onclick="prevStep(3)">
+                        Voltar
+                    </button>
+                    <button class="btn btn-primary" onclick="nextStep(5)" disabled id="nextStep4">
+                        Próximo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Confirmation -->
+        <div class="step-content hidden" id="step5">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Confirmar Agendamento</h2>
+                </div>
+                <div class="card-body">
+                    <div style="background: var(--bg-light); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Resumo do Agendamento</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-muted);">Serviço:</span>
+                                <strong id="summaryService">-</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-muted);">Barbeiro:</span>
+                                <strong id="summaryBarber">-</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-muted);">Data:</span>
+                                <strong id="summaryDate">-</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-muted);">Horário:</span>
+                                <strong id="summaryTime">-</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border);">
+                                <span style="color: var(--text-muted);">Valor Total:</span>
+                                <strong style="font-size: 20px; color: var(--secondary);" id="summaryPrice">-</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Observações (opcional)</label>
+                        <textarea class="form-textarea" id="observations" placeholder="Alguma observação para o barbeiro?"></textarea>
+                    </div>
+
+                    <div id="loginPrompt" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius); padding: 16px; margin-top: 20px;">
+                        <p style="font-size: 14px; color: var(--text-dark);">
+                            <strong>⚡ Para confirmar o agendamento,</strong> você precisa estar logado.
+                            <a href="login.html" style="color: var(--secondary);">Entrar</a> ou <a href="cadastro.html" style="color: var(--secondary);">Criar conta</a>.
+                        </p>
+                    </div>
+                </div>
+                <div class="card-footer" style="display: flex; justify-content: space-between;">
+                    <button class="btn btn-outline" onclick="prevStep(4)">
+                        Voltar
+                    </button>
+                    <button class="btn btn-success btn-lg" onclick="confirmAppointment()" id="confirmBtn">
+                        ✓ Confirmar Agendamento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmationModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Agendamento Confirmado!</h3>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px;">
+                    ✓
+                </div>
+                <h3 style="margin-bottom: 8px;">Agendamento Realizado com Sucesso!</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">
+                    Você receberá uma confirmação por e-mail. Não esqueça de chegar 10 minutos antes do horário.
+                </p>
+                <div style="background: var(--bg-light); border-radius: var(--radius); padding: 16px; margin-bottom: 20px;">
+                    <p style="font-size: 14px; color: var(--text-muted);">Código do agendamento:</p>
+                    <p style="font-size: 20px; font-weight: 700; color: var(--secondary);" id="appointmentCode">-</p>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center;">
+                <a href="index.html" class="btn btn-primary">Voltar ao Início</a>
+                <a href="perfil.html" class="btn btn-outline">Meus Agendamentos</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/agendamento.js"></script>
+</body>
+</html>

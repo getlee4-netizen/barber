@@ -5,8 +5,8 @@
 // Dashboard > Settings > API
 
 const SUPABASE_CONFIG = {
-    url: 'https://SEU-PROJETO.supabase.co',
-    anonKey: 'SUA-CHAVE-ANON-AQUI'
+    url: 'https://yywukiomsbbbzochfibb.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5d3VraW9tc2JiYnpvY2hmaWJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNzI0NzYsImV4cCI6MjEwMDk0ODQ3Nn0.RcpsB5EL92b5oNm0z3QwqFb-t_cMAqAO0Rk6leK7S2U'
 };
 
 // Inicializar Supabase
